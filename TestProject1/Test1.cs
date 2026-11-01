@@ -200,5 +200,22 @@ namespace MathExpressionsLab.Tests
             // Assert
             Assert.AreEqual(42.5, actual, 1e-9);
         }
+        [TestMethod]
+public void PolynomialDegree_WhenNotPolynomial_ReturnsMinusOne()
+        {
+            // Arrange
+            var x = new Variable("x");
+            // Sqrt(x) не является полиномом (так как x - переменная)
+            var nonPolynomial = new Sqrt(x);
+
+            // Складываем не-полином и константу
+            var expr = new Add(nonPolynomial, new Constant(5));
+
+            // Act
+            int degree = expr.PolynomialDegree;
+
+            // Assert
+            Assert.AreEqual(-1, degree);
+        }
     }
 }
