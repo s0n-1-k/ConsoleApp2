@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MathExpressionsLab;
+using System.Runtime.CompilerServices;
 
 namespace MathExpressionsLab.Tests
 {
@@ -284,5 +285,46 @@ public class SubsractTests {
             Assert.AreEqual("(x - y) * z", expr3.ToString());
         }
 
+    }
+    [TestClass]
+    public class MultiplyTest
+    {
+        [TestMethod]
+        public void Mult_Const()
+        {
+            var expr = new Multiply(new Constant(5), new Constant(4));
+            double actual = expr.Compute(new Dictionary<string, double>());
+            Assert.AreEqual(20.0, actual, 1e-9);
+        }
+        [TestMethod]
+        public void Mult_Var()
+        {
+            var x = new Variable("x");
+            var y = new Variable("y");
+            var expr = new Multiply(x, y);
+            var val = new Dictionary<string, double> { ["x"]= 5, ["y"]=10};
+            double actual = expr.Compute(val);
+            Assert.AreEqual(50.0, actual, 1e-9);
+        }
+        [TestMethod]
+        public void Ispolinomial_Mult()
+        {
+            var x = new Variable("x");
+            var polin = new Multiply(x, new Constant(5));
+            Assert.IsTrue(polin.IsPolynomial);
+            var nonpoli = new Multiply(new Sqrt(x), new Constant(5));
+            Assert.IsFalse(nonpoli.IsPolynomial);
+        }
+        [TestMethod]
+        public void MultPolynomialDegree_MaxOrMIinysOne()
+        {
+            var x = new Variable("x");
+            var xx = new Multiply(x, x);
+            var poly = new Multiply(xx, x);
+            Assert.AreEqual(3, poly.PolynomialDegree);
+            var nonpoly = new Multiply(new Sqrt(x), x);
+            Assert.AreEqual(-1, nonpoly.PolynomialDegree);
+
+        }
     }
 }
