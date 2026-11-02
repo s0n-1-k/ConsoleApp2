@@ -218,4 +218,71 @@ public void PolynomialDegree_WhenNotPolynomial_ReturnsMinusOne()
             Assert.AreEqual(-1, degree);
         }
     }
+    [TestClass]
+public class SubsractTests {
+        [TestMethod]
+        public void Compute_TwoConstants_ReturnsSub()
+        {
+            // Arrange
+            var expr = new Subtract(new Constant(10), new Constant(3));
+
+            // Act
+            double actual = expr.Compute(new Dictionary<string, double>());
+
+            // Assert
+            Assert.AreEqual(7.0, actual, 1e-9);
+        }
+        [TestMethod]
+        public void Compute_Variables_ReturnsSub()
+        {
+            var x = new Variable("x");
+            var y = new Variable("y");
+            var expr = new Subtract(x, y);
+            var values = new Dictionary<string, double> { ["x"] = 10, ["y"] = 7 };
+            double actual = expr.Compute(values);
+            Assert.AreEqual(3.0, actual, 1e-9);
+        }
+        [TestMethod]
+        public void IsVariables_forSub()
+        {
+            var x=new Variable("x");
+            var y = new Variable("y");
+            var expr = new Subtract(x, y);
+            CollectionAssert.AreEquivalent(new[] {"x","y"}, expr.Variables.ToList());
+        }
+        [TestMethod]
+        public void Ispolinomial_Sub()
+        {
+            var x = new Variable("x");
+            var polin = new Subtract(x, new Constant(5));
+            Assert.IsTrue(polin.IsPolynomial);
+            var nonpoli = new Subtract(new Sqrt(x), new Constant(5));
+            Assert.IsFalse(nonpoli.IsPolynomial);
+        }
+        [TestMethod]
+        public void PolynomialDegree_MaxOrMIinysOne()
+        {
+            var x = new Variable("x");
+            var xx = new Multiply(x, x);
+            var poly = new Subtract(xx, x);
+            Assert.AreEqual(2, poly.PolynomialDegree);
+            var nonpoly = new Subtract(new Sqrt(x), x);
+            Assert.AreEqual(-1, nonpoly.PolynomialDegree);
+           
+        }
+        [TestMethod]
+        public void ToString_Subtract()
+        {
+            var x = new Variable("x");
+            var y = new Variable("y");
+            var z = new Variable("z");
+            var expr = new Subtract(x, y);
+            Assert.AreEqual("x - y", expr.ToString());
+            var expr2 = new Subtract(x,new Add(y, z));
+            Assert.AreEqual("x - (y + z)", expr2.ToString());
+            var expr3 = new Multiply(new Subtract(x, y), z);
+            Assert.AreEqual("(x - y) * z", expr3.ToString());
+        }
+
+    }
 }
